@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
+	"strconv"
 	"strings"
 
-	"github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go/pkg/api"
 	"net/http"
+
+	"github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go/pkg/api"
 )
 
 type filter struct {
@@ -36,13 +38,11 @@ func parseBasicAuth(auth string) (username, password string, ok bool) {
 
 // checkRemote checks the username and password against a remote server, through http request.
 func checkRemote(config *config, username, password string) bool {
-	headers := map[string]string{
-		"Content-Type": "application/json",
-	}
 	body := fmt.Sprintf(`{"username": "%s", "password": "%s"}`, username, password)
-	remote := "http://" + config.host + ":" + config.port + "/check"
-	resp, err := http.Post(config.remote, headers, body)
+	remoteAddr := "http://" + config.host + ":" + strconv.Itoa(int(config.port)) + "/check"
+	resp, err := http.Post(remoteAddr, "application/json", strings.NewReader(body))
 	if err != nil {
+		fmt.Printf("check error: %v\n", err)
 		return false
 	}
 	if resp.StatusCode != 200 {
@@ -76,7 +76,7 @@ func (f *filter) DecodeHeaders(header api.RequestHeaderMap, endStream bool) api.
 			return
 		}
 		f.callbacks.Continue(api.Continue)
-	}
+	}()
 	return api.Running
 }
 

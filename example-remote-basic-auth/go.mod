@@ -1,4 +1,4 @@
-module envoy-go-filer.example/example-basic-auth
+module envoy-go-filer.example/example-remote-basic-auth
 
 go 1.19
 

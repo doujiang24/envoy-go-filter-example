@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	http.RegisterHttpFilterConfigFactory("basic-auth", configFactory)
+	http.RegisterHttpFilterConfigFactory("remote-basic-auth", configFactory)
 	http.RegisterHttpFilterConfigParser(&parser{})
 }
 
@@ -32,8 +32,8 @@ func (p *parser) Parse(any *anypb.Any) interface{} {
 	if host, ok := v.AsMap()["host"].(string); ok {
 		conf.host = host
 	}
-	if port, ok := v.AsMap()["port"].(uint64); ok {
-		conf.port = port
+	if port, ok := v.AsMap()["port"].(float64); ok {
+		conf.port = uint64(port)
 	}
 	return conf
 }

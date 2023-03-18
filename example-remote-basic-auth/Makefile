@@ -12,6 +12,9 @@ run:
 		envoyproxy/envoy:contrib-dev \
 		envoy -c /etc/envoy/envoy.yaml
 
+run-server:
+	go run remote-server/main.go
+
 test:
 	curl -s -I 'http://localhost:10000/'
 	curl -s -I 'http://localhost:10000/' -H 'Authorization: basic Zm9vOmJhcg=='

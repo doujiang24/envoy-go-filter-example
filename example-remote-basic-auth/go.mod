@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/cncf/xds/go v0.0.0-20230112175826-46e39c7b9b43
-	github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go v0.0.0-20230218013313-14111e3c62d3
+	github.com/envoyproxy/envoy v1.26.0
 )
 
 require (
@@ -15,5 +15,5 @@ require (
 	golang.org/x/text v0.3.0 // indirect
 	google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55 // indirect
 	google.golang.org/grpc v1.25.1 // indirect
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.30.0
 )

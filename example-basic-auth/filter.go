@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"fmt"
 	"strings"
 
 	"github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go/pkg/api"
@@ -44,7 +43,7 @@ func (f *filter) verify(header api.RequestHeaderMap) (bool, string) {
 	if !ok {
 		return false, "invalid Authorization format"
 	}
-	fmt.Printf("expected username: %v, password: %v; got username: %v, password: %v\n", f.config.username, f.config.password, username, password)
+	// fmt.Printf("expected username: %v, password: %v; got username: %v, password: %v\n", f.config.username, f.config.password, username, password)
 	if f.config.username == username && f.config.password == password {
 		return true, ""
 	}
@@ -52,12 +51,15 @@ func (f *filter) verify(header api.RequestHeaderMap) (bool, string) {
 }
 
 func (f *filter) DecodeHeaders(header api.RequestHeaderMap, endStream bool) api.StatusType {
-	if ok, msg := f.verify(header); !ok {
-		// TODO: set the WWW-Authenticate response header
-		f.callbacks.SendLocalReply(401, msg, map[string]string{}, 0, "bad-request")
-		return api.LocalReply
-	}
-	return api.Continue
+	go func() {
+		if ok, msg := f.verify(header); !ok {
+			// TODO: set the WWW-Authenticate response header
+			f.callbacks.SendLocalReply(401, msg, map[string]string{}, 0, "bad-request")
+		} else {
+			f.callbacks.Continue(api.Continue)
+		}
+	}()
+	return api.Running
 }
 
 func (f *filter) DecodeData(buffer api.BufferInstance, endStream bool) api.StatusType {
@@ -69,11 +71,17 @@ func (f *filter) DecodeTrailers(trailers api.RequestTrailerMap) api.StatusType {
 }
 
 func (f *filter) EncodeHeaders(header api.ResponseHeaderMap, endStream bool) api.StatusType {
-	return api.Continue
+	go func() {
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) EncodeData(buffer api.BufferInstance, endStream bool) api.StatusType {
-	return api.Continue
+	go func() {
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) EncodeTrailers(trailers api.ResponseTrailerMap) api.StatusType {

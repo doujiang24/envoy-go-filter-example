@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"fmt"
 	"strings"
 
 	"github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go/pkg/api"
@@ -44,7 +43,7 @@ func (f *filter) verify(header api.RequestHeaderMap) (bool, string) {
 	if !ok {
 		return false, "invalid Authorization format"
 	}
-	fmt.Printf("expected username: %v, password: %v; got username: %v, password: %v\n", f.config.username, f.config.password, username, password)
+	// fmt.Printf("expected username: %v, password: %v; got username: %v, password: %v\n", f.config.username, f.config.password, username, password)
 	if f.config.username == username && f.config.password == password {
 		return true, ""
 	}

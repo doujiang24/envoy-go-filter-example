@@ -52,6 +52,8 @@ func (f *filter) verify(header api.RequestHeaderMap) (bool, string) {
 
 func (f *filter) DecodeHeaders(header api.RequestHeaderMap, endStream bool) api.StatusType {
 	go func() {
+		defer f.callbacks.RecoverPanic()
+
 		if ok, msg := f.verify(header); !ok {
 			// TODO: set the WWW-Authenticate response header
 			f.callbacks.SendLocalReply(401, msg, map[string]string{}, 0, "bad-request")
@@ -72,6 +74,8 @@ func (f *filter) DecodeTrailers(trailers api.RequestTrailerMap) api.StatusType {
 
 func (f *filter) EncodeHeaders(header api.ResponseHeaderMap, endStream bool) api.StatusType {
 	go func() {
+		defer f.callbacks.RecoverPanic()
+
 		f.callbacks.Continue(api.Continue)
 	}()
 	return api.Running
@@ -79,6 +83,8 @@ func (f *filter) EncodeHeaders(header api.ResponseHeaderMap, endStream bool) api
 
 func (f *filter) EncodeData(buffer api.BufferInstance, endStream bool) api.StatusType {
 	go func() {
+		defer f.callbacks.RecoverPanic()
+
 		f.callbacks.Continue(api.Continue)
 	}()
 	return api.Running

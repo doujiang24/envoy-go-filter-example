@@ -51,11 +51,6 @@ func (f *filter) verify(header api.RequestHeaderMap) (bool, string) {
 }
 
 func (f *filter) DecodeHeaders(header api.RequestHeaderMap, endStream bool) api.StatusType {
-	if ok, msg := f.verify(header); !ok {
-		// TODO: set the WWW-Authenticate response header
-		f.callbacks.SendLocalReply(401, msg, map[string]string{}, 0, "bad-request")
-		return api.LocalReply
-	}
 	return api.Continue
 }
 

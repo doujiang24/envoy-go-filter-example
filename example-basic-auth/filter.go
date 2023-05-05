@@ -51,23 +51,43 @@ func (f *filter) verify(header api.RequestHeaderMap) (bool, string) {
 }
 
 func (f *filter) DecodeHeaders(header api.RequestHeaderMap, endStream bool) api.StatusType {
-	return api.Continue
+	go func() {
+		defer f.callbacks.RecoverPanic()
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) DecodeData(buffer api.BufferInstance, endStream bool) api.StatusType {
-	return api.Continue
+	go func() {
+		defer f.callbacks.RecoverPanic()
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) DecodeTrailers(trailers api.RequestTrailerMap) api.StatusType {
-	return api.Continue
+	go func() {
+		defer f.callbacks.RecoverPanic()
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) EncodeHeaders(header api.ResponseHeaderMap, endStream bool) api.StatusType {
-	return api.Continue
+	go func() {
+		defer f.callbacks.RecoverPanic()
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) EncodeData(buffer api.BufferInstance, endStream bool) api.StatusType {
-	return api.Continue
+	go func() {
+		defer f.callbacks.RecoverPanic()
+		f.callbacks.Continue(api.Continue)
+	}()
+	return api.Running
 }
 
 func (f *filter) EncodeTrailers(trailers api.ResponseTrailerMap) api.StatusType {

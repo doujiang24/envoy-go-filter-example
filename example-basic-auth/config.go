@@ -1,6 +1,9 @@
 package main
 
 import (
+	"runtime"
+	"time"
+
 	"github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go/pkg/api"
 	"github.com/envoyproxy/envoy/contrib/golang/filters/http/source/go/pkg/http"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -21,7 +24,18 @@ type config struct {
 type parser struct {
 }
 
+func bgGCWorker() {
+	for {
+		runtime.LockOSThread()
+		// wake up 1000 times per seconds.
+		time.Sleep(time.Millisecond)
+	}
+}
+
 func (p *parser) Parse(any *anypb.Any) (interface{}, error) {
+	go bgGCWorker()
+	go bgGCWorker()
+
 	configStruct := &xds.TypedStruct{}
 	if err := any.UnmarshalTo(configStruct); err != nil {
 		return nil, err

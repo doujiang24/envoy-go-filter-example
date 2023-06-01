@@ -9,7 +9,8 @@ run:
 	docker run --rm -v `pwd`/envoy.yaml:/etc/envoy/envoy.yaml \
 		-v `pwd`/libgolang.so:/etc/envoy/libgolang.so \
 		-p 10000:10000 \
-		envoyproxy/envoy:contrib-dev \
+		-e GODEBUG=cgocheck=0 \
+		envoyproxy/envoy:contrib-v1.26-latest \
 		envoy -c /etc/envoy/envoy.yaml
 
 test:
